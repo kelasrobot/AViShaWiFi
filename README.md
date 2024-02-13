@@ -26,10 +26,10 @@ To begin using the AViShaWiFi library, you first need to initialize it with your
 ```cpp
 #include "AViShaWiFi.h"
 
-AViShaWiFi avishaWiFi;
+AViShaWiFi wifi;
 
 void setup() {
-  avishaWiFi.begin("YourWiFiSSID", "YourWiFiPassword");
+  wifi.begin("YourWiFiSSID", "YourWiFiPassword");
 }
 ```
 
