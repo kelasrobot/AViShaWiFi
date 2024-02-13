@@ -90,7 +90,7 @@ void loop()
   delay(15000);
 }
 ```
-HTTP POST REQUEST
+HTTPS POST REQUEST
 ```cpp
 #include<AViShaWiFi.h>
 #include<ArduinoJson.h>
