@@ -33,32 +33,97 @@ void setup() {
 }
 ```
 
-### Making HTTP Requests
+### Making HTTP GET Requests
 
 AViShaWiFi supports making both HTTP GET and POST requests. Use the `httpGET()` and `httpPOST()` functions respectively.
 
-```cpp
-String response = avishaWiFi.httpGET("http://example.com/api/data");
-```
+HTTP GET REQUEST
 
 ```cpp
-String payload = "{\"key\":\"value\"}";
-std::vector<String> headers = {"Content-Type: application/json"};
-String response = avishaWiFi.httpPOST("http://example.com/api/post", payload, headers);
+#include <AViShaWiFi.h>
+
+const char *ssid = "your-ssid";
+const char *password = "your-password";
+const char *url = "http://test.kelasrobot.com";
+
+AViShaWiFi wifi;
+
+void setup()
+{
+  Serial.begin(115200);
+  wifi.begin(ssid, password);
+}
+
+void loop()
+{
+  String response = wifi.httpGET(url);
+  Serial.println(response);
+  delay(15000);
+}
 ```
 
 ### Making HTTPS Requests
 
 For HTTPS requests, use the `httpsGET()` and `httpsPOST()` functions. Ensure that the server's SSL certificate is valid.
 
-```cpp
-String response = avishaWiFi.httpsGET("https://example.com/api/data");
-```
+HTTPS GET REQUEST
 
 ```cpp
-String payload = "{\"key\":\"value\"}";
-std::vector<String> headers = {"Content-Type: application/json"};
-String response = avishaWiFi.httpsPOST("https://example.com/api/post", payload, headers);
+#include<AViShaWiFi.h>
+
+const char *ssid = "your-ssid";
+const char *password = "your-password";
+const char *url = "https://test.kelasrobot.com";
+
+AViShaWiFi wifi;
+
+void setup()
+{
+  Serial.begin(115200);
+  wifi.begin(ssid, password);
+}
+
+void loop()
+{
+  String response = wifi.httpsGET(url);
+  Serial.println(response);
+  delay(15000);
+}
+```
+HTTP POST REQUEST
+```cpp
+#include<AViShaWiFi.h>
+#include<ArduinoJson.h>
+
+const char* ssid = "WiFiName";
+const char* pass = "WiFiPassword";
+const char* url = "https://nama-domain.com/send/message";
+String uid = "your-uid";
+
+AViShaWiFi wifi;
+int tinggiMukaAir = 145;
+
+void setup() {
+  Serial.begin(115200);
+  wifi.begin(ssid, pass);
+}
+
+void loop() {
+  std::vector<String> headers;
+  headers.push_back("Content-Type:application/json");
+  headers.push_back("Accept:application/json");
+  headers.push_back("x-uid:" + uid);
+
+  // ArduinoJson
+  JsonDocument doc;
+  String pesan = String() + "Ketinggian Air: " + tinggiMukaAir;
+  doc["message"] = pesan;
+  String json;
+  serializeJson(doc, json);
+  String response = wifi.httpsPOST(url, json, headers);
+  Serial.println(response);
+  delay(10000);
+}
 ```
 
 ---
