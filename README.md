@@ -1,150 +1,76 @@
+# FonnteArduino
 
-### AViShaWiFi Library
+**FonnteArduino** adalah library Arduino yang memudahkan pengiriman pesan WhatsApp melalui API Fonnte menggunakan ESP32 atau ESP8266. Library ini memungkinkan Anda untuk menghubungkan perangkat ke jaringan WiFi, mengonfigurasi token API Anda, dan mengirim pesan dengan mudah melalui platform Fonnte. Library ini ideal digunakan untuk aplikasi IoT yang memerlukan notifikasi atau peringatan langsung melalui WhatsApp.
 
-AViShaWiFi is a simple library for connecting ESP8266 devices to WiFi networks and making HTTP/HTTPS requests. This library provides functions for initiating WiFi connection, making GET and POST requests over both HTTP and HTTPS protocols.
+## Fitur
 
----
+- Menghubungkan ke jaringan WiFi dengan ESP32 atau ESP8266
+- Mengirim pesan WhatsApp melalui Fonnte API
+- Konfigurasi kode negara yang dapat disesuaikan
+- Mendukung pengiriman pesan dengan atau tanpa delay
 
-## Installation
+## Cara Mendapatkan Token Fonnte
 
-To use AViShaWiFi library in your Arduino projects, follow these steps:
+Untuk menggunakan API Fonnte, Anda perlu mendaftar dan mendapatkan token. Anda bisa mendaftar melalui link berikut:  
+[Daftar Fonnte](https://bit.ly/daftar-fonnte)
 
-1. Download the AViShaWiFi-main.zip file from this repository.
-2. Open the Arduino IDE.
-3. Navigate to `Sketch` -> `Include Library` -> `Add .ZIP Library`.
-4. Select the downloaded AViShaWiFi-main.zip file.
-5. The library will be added to your Arduino IDE.
+## Instalasi
 
----
+1. **Unduh atau Clone Repository ini**:  
+   Anda bisa mengunduh file `.zip` atau melakukan clone repository ini ke komputer Anda.
 
-## Usage
+2. **Install Library melalui Arduino IDE**:  
+   - Buka Arduino IDE
+   - Pilih **Sketch** > **Include Library** > **Add .ZIP Library**
+   - Pilih file `.zip` dari library **FonnteArduino** yang sudah diunduh.
 
-### Initializing AViShaWiFi
+3. **Gunakan Library**:  
+   Setelah library terinstal, Anda dapat langsung menggunakan **FonnteArduino** di sketch Arduino Anda.
 
-To begin using the AViShaWiFi library, you first need to initialize it with your WiFi credentials. Use the `begin()` function to connect to your WiFi network.
+## Contoh Penggunaan
 
-```cpp
-#include "AViShaWiFi.h"
-
-AViShaWiFi wifi;
-
-void setup() {
-  wifi.begin("YourWiFiSSID", "YourWiFiPassword");
-}
-```
-
-### Making HTTP GET Requests
-
-AViShaWiFi supports making both HTTP GET and POST requests. Use the `httpGET()` and `httpPOST()` functions respectively.
-
-HTTP GET REQUEST
+Berikut adalah contoh penggunaan sederhana library ini:
 
 ```cpp
-#include <AViShaWiFi.h>
+#include <FonnteArduino.h>
 
-const char *ssid = "your-ssid";
-const char *password = "your-password";
-const char *url = "http://test.kelasrobot.com";
-
-AViShaWiFi wifi;
-
-void setup()
-{
-  Serial.begin(115200);
-  wifi.begin(ssid, password);
-}
-
-void loop()
-{
-  String response = wifi.httpGET(url);
-  Serial.println(response);
-  delay(15000);
-}
-```
-
-### Making HTTPS Requests
-
-For HTTPS requests, use the `httpsGET()` and `httpsPOST()` functions. Ensure that the server's SSL certificate is valid.
-
-HTTPS GET REQUEST
-
-```cpp
-#include<AViShaWiFi.h>
-
-const char *ssid = "your-ssid";
-const char *password = "your-password";
-const char *url = "https://test.kelasrobot.com";
-
-AViShaWiFi wifi;
-
-void setup()
-{
-  Serial.begin(115200);
-  wifi.begin(ssid, password);
-}
-
-void loop()
-{
-  String response = wifi.httpsGET(url);
-  Serial.println(response);
-  delay(15000);
-}
-```
-HTTPS POST REQUEST
-```cpp
-#include<AViShaWiFi.h>
-#include<ArduinoJson.h>
-
-const char* ssid = "WiFiName";
-const char* pass = "WiFiPassword";
-const char* url = "https://nama-domain.com/send/message";
-String uid = "your-uid";
-
-AViShaWiFi wifi;
-int tinggiMukaAir = 145;
+// Inisialisasi objek FonnteArduino dengan token API Anda
+FonnteArduino fonnte("YOUR_FONNTE_TOKEN");
 
 void setup() {
   Serial.begin(115200);
-  wifi.begin(ssid, pass);
+
+  // Menghubungkan ke WiFi
+  fonnte.connectToWiFi("SSID", "PASSWORD");
+
+  // Mengirim pesan WhatsApp
+  fonnte.sendMessage("08123456789", "Hello, ini pesan dari ESP32!");
 }
 
 void loop() {
-  std::vector<String> headers;
-  headers.push_back("Content-Type:application/json");
-  headers.push_back("Accept:application/json");
-  headers.push_back("x-uid:" + uid);
-
-  // ArduinoJson
-  JsonDocument doc;
-  String pesan = String() + "Ketinggian Air: " + tinggiMukaAir;
-  doc["message"] = pesan;
-  String json;
-  serializeJson(doc, json);
-
-  String response = wifi.httpsPOST(url, json, headers);
-  Serial.println(response);
-  delay(10000);
+  // Tidak ada aktivitas di loop
 }
 ```
 
----
+## Fitur Tambahan
 
-## Dependencies
+1. **Mengirim Pesan dengan Delay**  
+   Anda bisa mengirim pesan dengan delay menggunakan fungsi `sendMessageWithDelay()`. Contoh:
+   ```cpp
+   fonnte.sendMessageWithDelay("08123456789", "Pesan dengan delay", 5000); // Delay 5 detik
+   ```
 
-- Arduino
-- ESP8266WiFi
-- ESP8266HTTPClient
-- WiFiClientSecureBearSSL
+2. **Mengubah Kode Negara**  
+   Secara default, kode negara adalah "62" (Indonesia), tetapi Anda bisa mengubahnya menggunakan fungsi `setCountryCode()`. Contoh:
+   ```cpp
+   fonnte.setCountryCode("1"); // Mengubah kode negara menjadi USA (1)
+   ```
 
----
+## Uji Coba
 
-## Contributing
+- Library ini sudah berhasil diuji di **ESP32** dengan Library Board versi **2.0.17**.
+- Library ini juga berhasil diuji di **ESP8266** dengan Library Board versi **2.7.4**.
 
-If you find any issues or have suggestions for improvement, please feel free to open an issue or create a pull request on GitHub.
+## Lisensi
 
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
+Library ini dirilis di bawah lisensi MIT. Silakan lihat file [LICENSE](./LICENSE) untuk detail lebih lanjut.
